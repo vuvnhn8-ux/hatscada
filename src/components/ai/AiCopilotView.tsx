@@ -20,13 +20,23 @@ interface AiCopilotViewProps {
 }
 
 export const AiCopilotView: React.FC<AiCopilotViewProps> = ({ initialPrompt }) => {
-  const { machines, tags, alarmEvents, overallOee, plantPowerKw, plantOkRate } = useScada();
+  const {
+    machines,
+    tags,
+    alarmEvents,
+    overallOee,
+    plantPowerKw,
+    plantOkRate,
+    deepLearningDocs,
+    settings,
+    t
+  } = useScada();
 
   const [messages, setMessages] = useState<AiMessage[]>([
     {
       id: 'welcome',
       sender: 'assistant',
-      text: 'Xin chào! Tôi là **HAT AI Industrial Copilot**, chuyên gia tự động hóa nhà máy, kiến trúc SCADA & PLC (Keyence, Siemens, Mitsubishi) được hỗ trợ bởi Google Gemini.\n\nTôi có thể giúp bạn:\n1. 🔍 **Chẩn đoán sự cố Alarm & Root-Cause Analysis** thời gian thực.\n2. 📊 **Phân tích tổn thất OEE** và đề xuất giải pháp Kaizen.\n3. ⚡ **Tối ưu hóa chu kỳ quét PLC (Scan Cycle)** và cấu hình bộ nhớ thanh ghi.\n4. 📝 **Dự đoán bảo trì (Predictive Maintenance)** dựa trên cảm biến nhiệt độ và rung động.',
+      text: 'Xin chào! Tôi là **HAT AI Industrial Copilot**, chuyên gia tự động hóa nhà máy, kiến trúc SCADA & PLC (Keyence, Siemens, Mitsubishi) được hỗ trợ bởi Google Gemini.\n\nTôi có thể giúp bạn:\n1. 🔍 **Chẩn đoán sự cố Alarm & Root-Cause Analysis** thời gian thực.\n2. 📚 **Tra cứu tài liệu thiết bị & SOP sửa lỗi (Deep Learning RAG)**.\n3. 📊 **Phân tích tổn thất OEE** và đề xuất giải pháp Kaizen.\n4. ⚡ **Tối ưu hóa chu kỳ quét PLC (Scan Cycle)** và cấu hình bộ nhớ thanh ghi.\n5. 📝 **Dự đoán bảo trì (Predictive Maintenance)** dựa trên cảm biến nhiệt độ và rung động.',
       timestamp: new Date().toISOString()
     }
   ]);
@@ -61,7 +71,7 @@ export const AiCopilotView: React.FC<AiCopilotViewProps> = ({ initialPrompt }) =
     setIsLoading(true);
 
     try {
-      // Build industrial context snapshot
+      // Build industrial context snapshot with Deep Learning Knowledge Base
       const systemContext = {
         plantOee: overallOee,
         plantOkRate,
@@ -77,6 +87,13 @@ export const AiCopilotView: React.FC<AiCopilotViewProps> = ({ initialPrompt }) =
           speed: m.currentSpeed,
           okCount: m.okCount,
           totalCount: m.totalCount
+        })),
+        ragKnowledgeBase: deepLearningDocs.map(doc => ({
+          title: doc.title,
+          category: doc.category,
+          machine: doc.targetMachineCode,
+          content: doc.contentSnippet,
+          tags: doc.tags
         }))
       };
 
@@ -85,7 +102,10 @@ export const AiCopilotView: React.FC<AiCopilotViewProps> = ({ initialPrompt }) =
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           prompt: text,
-          context: systemContext
+          context: systemContext,
+          apiKey: settings.geminiApiKey || undefined,
+          model: settings.geminiModel || 'gemini-3.7-flash',
+          temperature: settings.geminiTemperature ?? 0.7
         })
       });
 
@@ -104,7 +124,7 @@ export const AiCopilotView: React.FC<AiCopilotViewProps> = ({ initialPrompt }) =
       const errMsg: AiMessage = {
         id: `err-${Date.now()}`,
         sender: 'assistant',
-        text: '⚠️ Không thể kết nối với AI Backend. Vui lòng đảm bảo `GEMINI_API_KEY` đã được cấu hình trong Settings.',
+        text: '⚠️ Không thể kết nối với AI Backend. Vui lòng kiểm tra `GEMINI_API_KEY` trong Settings.',
         timestamp: new Date().toISOString()
       };
       setMessages(prev => [...prev, errMsg]);

@@ -15,7 +15,7 @@ import {
 import { Tag, TagDataType } from '../../types/scada';
 
 export const TagStudio: React.FC = () => {
-  const { tags, machines, plcs, addTag, updateTag, deleteTag, currentUser } = useScada();
+  const { tags, machines, plcs, addTag, updateTag, deleteTag, currentUser, t } = useScada();
 
   const [isCreating, setIsCreating] = useState(false);
   const [editingTag, setEditingTag] = useState<Tag | null>(null);
@@ -131,10 +131,10 @@ export const TagStudio: React.FC = () => {
             <span>INDUSTRIAL TAG MANAGEMENT ENGINE</span>
           </div>
           <h1 className="text-xl font-black text-slate-100 mt-1">
-            Quản Lý & Cấu Hình PLC Tags (Tag Studio)
+            {t('tagStudio')}
           </h1>
           <p className="text-xs text-slate-400 mt-0.5">
-            Cấu hình bộ nhớ thanh ghi PLC (Keyence DM/MR, Mitsubishi D/M, Siemens DB/MW, Modbus %MW)
+            {t('tagDesc')}
           </p>
         </div>
 
@@ -152,7 +152,7 @@ export const TagStudio: React.FC = () => {
             className="flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold shadow-lg shadow-cyan-600/30 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            <span>Tạo Tag Mới</span>
+            <span>{t('createTag')}</span>
           </button>
         </div>
       </div>
@@ -163,15 +163,15 @@ export const TagStudio: React.FC = () => {
           <table className="w-full text-left text-xs font-mono">
             <thead>
               <tr className="bg-slate-950/80 border-b border-slate-800 text-slate-400">
-                <th className="py-3 px-4">Tag Name</th>
-                <th className="py-3 px-4">Machine & Line</th>
-                <th className="py-3 px-4">PLC Controller</th>
-                <th className="py-3 px-4">PLC Address</th>
-                <th className="py-3 px-4">Data Type</th>
-                <th className="py-3 px-4">Unit</th>
-                <th className="py-3 px-4">Scan Rate</th>
-                <th className="py-3 px-4 text-center">Historian</th>
-                <th className="py-3 px-4 text-right">Actions</th>
+                <th className="py-3 px-4">{t('tagName')}</th>
+                <th className="py-3 px-4">{t('Machine & Line')}</th>
+                <th className="py-3 px-4">{t('plcController')}</th>
+                <th className="py-3 px-4">{t('tagAddress')}</th>
+                <th className="py-3 px-4">{t('dataType')}</th>
+                <th className="py-3 px-4">{t('unit')}</th>
+                <th className="py-3 px-4">{t('scanRate')}</th>
+                <th className="py-3 px-4 text-center">{t('historian')}</th>
+                <th className="py-3 px-4 text-right">{t('actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60">

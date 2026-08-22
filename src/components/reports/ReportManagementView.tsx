@@ -57,7 +57,8 @@ export const ReportManagementView: React.FC = () => {
     plantPowerKw,
     plantOkRate,
     totalShiftProduction,
-    currentUser
+    currentUser,
+    t
   } = useScada();
 
   const [activeTab, setActiveTab] = useState<'designer' | 'schedules' | 'archive' | 'shift-handover'>('designer');

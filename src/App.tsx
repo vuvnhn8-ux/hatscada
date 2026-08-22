@@ -13,6 +13,7 @@ import { OeeAnalyticsView } from './components/oee/OeeAnalyticsView';
 import { ReportManagementView } from './components/reports/ReportManagementView';
 import { NotificationCenterView } from './components/notifications/NotificationCenterView';
 import { AiCopilotView } from './components/ai/AiCopilotView';
+import { DeepLearningKnowledgeBase } from './components/ai/DeepLearningKnowledgeBase';
 import { SettingsView } from './components/settings/SettingsView';
 
 function ScadaApp() {
@@ -113,6 +114,8 @@ function ScadaApp() {
             {currentView === 'ai-copilot' && (
               <AiCopilotView initialPrompt={aiInitialPrompt} />
             )}
+
+            {currentView === 'deep-learning' && <DeepLearningKnowledgeBase />}
 
             {currentView === 'settings' && <SettingsView />}
           </div>

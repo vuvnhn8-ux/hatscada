@@ -17,7 +17,8 @@ import {
   NotificationHistoryItem,
   ReportTemplateConfig,
   ReportScheduleConfig,
-  GeneratedReportArchiveItem
+  GeneratedReportArchiveItem,
+  DeepLearningDoc
 } from '../types/scada';
 
 export const initialUsers: User[] = [
@@ -1427,6 +1428,79 @@ export const initialGeneratedReports: GeneratedReportArchiveItem[] = [
       totalAlarms: 38,
       energyConsumedKwh: 2140.5
     }
+  }
+];
+
+export const initialDeepLearningDocs: DeepLearningDoc[] = [
+  {
+    id: 'doc-01',
+    title: 'Sổ Tay Hướng Dẫn Sửa Lỗi Spindle Quá Nhiệt & Rung Động CNC-01',
+    fileName: 'CNC01_Spindle_Maintenance_Guide.pdf',
+    fileSizeKb: 1240,
+    fileType: 'PDF',
+    category: 'Equipment Manual',
+    targetMachineCode: 'CNC-01',
+    contentSnippet: `HƯỚNG DẪN XỬ LÝ LỖI TRỤC CHÍNH (SPINDLE) MÁY CNC-01:
+1. Triệu chứng: Nhiệt độ Spindle vượt 80°C hoặc rung động > 4.5 mm/s (Tag: CNC01.Spindle_Temp, CNC01.Vibration_RMS).
+2. Nguyên nhân phổ biến:
+   - Thiếu dầu bôi trơn hệ thống làm mát chiller.
+   - Vòng bi Spindle bị mòn sau > 8000 giờ chạy.
+   - Dao cắt bị mẻ gãy gây lệch tâm cơ khí.
+3. Quy trình khắc phục sự cố khẩn cấp:
+   - Bước 1: Nhấn STOP ngắt chạy tự động, bật bơm làm mát xả Chiller về 18°C.
+   - Bước 2: Kiểm tra áp suất khí nén siết dao (Ngưỡng 0.5 - 0.6 MPa).
+   - Bước 3: Nếu nhiệt độ không giảm sau 5 phút, tiến hành thay mỡ bôi trơn Isoflex NBU 15 cho vòng bi.
+   - Bước 4: Kiểm tra mã lỗi PLC Keyence KV-8000 tại ô nhớ DM100 (Bít 04 active: Alarm Spindle Overheat).`,
+    uploadedAt: new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString(),
+    uploadedBy: 'Nguyễn Văn Tuấn (Trưởng Phòng Bảo Trì)',
+    indexedInRAG: true,
+    vectorChunkCount: 18,
+    tags: ['CNC-01', 'Spindle', 'Overheat', 'Vibration', 'Keyence']
+  },
+  {
+    id: 'doc-02',
+    title: 'Bảng Bít Cảnh Báo Lỗi & Sơ Đồ Thanh Ghi PLC Keyence KV-8000',
+    fileName: 'Keyence_KV8000_Alarm_Memory_Map.pdf',
+    fileSizeKb: 850,
+    fileType: 'PLC_MAP',
+    category: 'PLC Memory Map',
+    targetMachineCode: 'Line 01 - Keyence KV',
+    contentSnippet: `BẢNG THANH GHI BÁO LỖI PLC KEYENCE KV-8000 (MC PROTOCOL):
+- DM100: Mức tốc độ Spindle hiện tại (0 - 12000 RPM)
+- DM102: Nhiệt độ trục chính CNC (°C) - Ngưỡng báo động High: 80°C
+- DM104: Tốc độ cấp phôi Feedrate (mm/min)
+- MR10000: Bít báo động Dừng Khẩn Emergency Stop (0 = Normal, 1 = Tripped)
+- MR10001: Bít báo động Áp Suất Dầu Khí Nén Thấp (< 0.4 MPa)
+- MR10002: Bít báo động Quá Tải Động Cơ Servo Trục Z (Servo Alarm Code 0x22)
+- MR10003: Bít lỗi truyền thông EtherNet/IP với Robot gắp phôi ROBOT-02`,
+    uploadedAt: new Date(Date.now() - 12 * 24 * 3600 * 1000).toISOString(),
+    uploadedBy: 'Lê Quang Minh (Kỹ Sư PLC)',
+    indexedInRAG: true,
+    vectorChunkCount: 12,
+    tags: ['Keyence', 'KV-8000', 'MC_Protocol', 'Register_Map', 'DM100']
+  },
+  {
+    id: 'doc-03',
+    title: 'Quy Trình Chuẩn SOP Xử Lý Lỗi Dây Chuyền Hàn Laser ROBOT-02',
+    fileName: 'SOP_Laser_Welding_ROBOT02_Troubleshooting.docx',
+    fileSizeKb: 1420,
+    fileType: 'SOP',
+    category: 'Troubleshooting Guide',
+    targetMachineCode: 'ROBOT-02',
+    contentSnippet: `SOP BẢO TRÌ & SỬA LỖI MÁY HÀN LASER 6 TỤC ROBOT-02:
+1. Lỗi áp suất khí bảo vệ Argon thấp (Tag: ROBOT02.ShieldGas_Flow < 12 L/min):
+   - Kiểm tra van giảm áp đường ống khí chính xưởng.
+   - Vệ sinh bép phun bọc xỉ hàn (Nozzle Tip).
+2. Lỗi công suất chùm Laser giảm đột ngột (Tag: ROBOT02.Laser_Power_Kw):
+   - Thay kính bảo vệ (Protective Window Lens) bị cháy đen.
+   - Kiểm tra nhiệt độ nước làm mát Chiller Laser (Duy trì 20°C ± 1°C).
+3. Lỗi lệch tọa độ đường hàn (Positional Drift):
+   - Chạy chương trình Calib TCP (Tool Center Point) cho Robot Fanuc/Yaskawa.`,
+    uploadedAt: new Date(Date.now() - 5 * 24 * 3600 * 1000).toISOString(),
+    uploadedBy: 'Trần Phi Hùng (Trưởng Ca Sản Xuất)',
+    indexedInRAG: true,
+    vectorChunkCount: 15,
+    tags: ['ROBOT-02', 'Laser_Welding', 'ShieldGas', 'Argon', 'SOP']
   }
 ];
 

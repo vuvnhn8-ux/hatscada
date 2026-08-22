@@ -30,7 +30,8 @@ import {
   ReportScheduleConfig,
   GeneratedReportArchiveItem,
   ReportTimeRange,
-  NotificationChannelType
+  NotificationChannelType,
+  DeepLearningDoc
 } from '../types/scada';
 import {
   initialMachines,
@@ -51,8 +52,10 @@ import {
   initialNotificationHistory,
   initialReportTemplates,
   initialReportSchedules,
-  initialGeneratedReports
+  initialGeneratedReports,
+  initialDeepLearningDocs
 } from '../mock/initialData';
+import { translations, translateDynamic, LanguageCode, Translations } from '../i18n/translations';
 
 interface ScadaContextType {
   machines: Machine[];
@@ -179,6 +182,26 @@ interface ScadaContextType {
 
   generateCustomReport: (template: ReportTemplateConfig, timeRange?: ReportTimeRange) => GeneratedReportArchiveItem;
   emailReportToRecipients: (reportArchiveId: string, recipientEmails: string[]) => Promise<{ success: boolean; message: string }>;
+
+  // Tag Service Architecture (Req 51)
+  getTagsByMachine: (machineId: string) => Tag[];
+  getTagsByPlc: (plcId: string) => Tag[];
+  getTagsByLine: (lineName: string) => Tag[];
+  getTagHistory: (tagId: string) => TagHistoryPoint[];
+  getScopedTags: (
+    scopeMode: 'Current Machine' | 'Current PLC' | 'Current Line' | 'Entire Factory',
+    scopeId?: string
+  ) => Tag[];
+
+  // Deep Learning & RAG Knowledge Base
+  deepLearningDocs: DeepLearningDoc[];
+  addDeepLearningDoc: (doc: Omit<DeepLearningDoc, 'id'>) => void;
+  deleteDeepLearningDoc: (docId: string) => void;
+
+  // Internationalization (i18n)
+  language: LanguageCode;
+  setLanguage: (lang: LanguageCode) => void;
+  t: (keyOrPhrase: keyof Translations | string) => string;
 }
 
 const ScadaContext = createContext<ScadaContextType | null>(null);
@@ -210,6 +233,30 @@ export const ScadaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [reportTemplates, setReportTemplates] = useState<ReportTemplateConfig[]>(initialReportTemplates);
   const [reportSchedules, setReportSchedules] = useState<ReportScheduleConfig[]>(initialReportSchedules);
   const [generatedReportArchive, setGeneratedReportArchive] = useState<GeneratedReportArchiveItem[]>(initialGeneratedReports);
+
+  // Deep Learning Docs State
+  const [deepLearningDocs, setDeepLearningDocs] = useState<DeepLearningDoc[]>(initialDeepLearningDocs);
+
+  const addDeepLearningDoc = (doc: Omit<DeepLearningDoc, 'id'>) => {
+    const newDoc: DeepLearningDoc = {
+      ...doc,
+      id: `doc-${Date.now()}`
+    };
+    setDeepLearningDocs(prev => [newDoc, ...prev]);
+  };
+
+  const deleteDeepLearningDoc = (docId: string) => {
+    setDeepLearningDocs(prev => prev.filter(d => d.id !== docId));
+  };
+
+  // Language & Translation Helpers
+  const setLanguage = (lang: LanguageCode) => {
+    setSettings(prev => ({ ...prev, language: lang }));
+  };
+
+  const t = (keyOrPhrase: keyof Translations | string): string => {
+    return translateDynamic(String(keyOrPhrase), settings.language || 'vi');
+  };
 
   // Tag Delay Violation Timers (for anti-chattering & persistence check)
   const tagViolationsRef = useRef<Record<string, number>>({});
@@ -1936,6 +1983,43 @@ HATSCADA Live Industrial State:
     };
   };
 
+  // Tag Service Implementations (Req 51)
+  const getTagsByMachine = useCallback((machineId: string): Tag[] => {
+    return tags.filter(t => t.machineId === machineId);
+  }, [tags]);
+
+  const getTagsByPlc = useCallback((plcId: string): Tag[] => {
+    return tags.filter(t => t.plcId === plcId);
+  }, [tags]);
+
+  const getTagsByLine = useCallback((lineName: string): Tag[] => {
+    const lineMachines = machines.filter(m => m.line === lineName || m.line.includes(lineName));
+    const mIds = lineMachines.map(m => m.id);
+    return tags.filter(t => t.machineId && mIds.includes(t.machineId));
+  }, [tags, machines]);
+
+  const getTagHistory = useCallback((tagId: string): TagHistoryPoint[] => {
+    return tagHistoryBuffer[tagId] || [];
+  }, [tagHistoryBuffer]);
+
+  const getScopedTags = useCallback((
+    scopeMode: 'Current Machine' | 'Current PLC' | 'Current Line' | 'Entire Factory',
+    scopeId?: string
+  ): Tag[] => {
+    if (scopeMode === 'Current Machine' && scopeId) {
+      return tags.filter(t => t.machineId === scopeId);
+    }
+    if (scopeMode === 'Current PLC' && scopeId) {
+      return tags.filter(t => t.plcId === scopeId);
+    }
+    if (scopeMode === 'Current Line' && scopeId) {
+      const lineMachines = machines.filter(m => m.line === scopeId || m.line.includes(scopeId));
+      const mIds = lineMachines.map(m => m.id);
+      return tags.filter(t => t.machineId && mIds.includes(t.machineId));
+    }
+    return tags;
+  }, [tags, machines]);
+
   return (
     <ScadaContext.Provider
       value={{
@@ -1969,6 +2053,11 @@ HATSCADA Live Industrial State:
         reportTemplates,
         reportSchedules,
         generatedReportArchive,
+        getTagsByMachine,
+        getTagsByPlc,
+        getTagsByLine,
+        getTagHistory,
+        getScopedTags,
         switchUser,
         writeTagValue,
         addTag,
@@ -2031,7 +2120,13 @@ HATSCADA Live Industrial State:
         toggleReportSchedule,
         executeReportScheduleNow,
         generateCustomReport,
-        emailReportToRecipients
+        emailReportToRecipients,
+        deepLearningDocs,
+        addDeepLearningDoc,
+        deleteDeepLearningDoc,
+        language: settings.language,
+        setLanguage,
+        t
       }}
     >
       {children}

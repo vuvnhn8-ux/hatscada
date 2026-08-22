@@ -32,7 +32,8 @@ export const AlarmManagementView: React.FC<AlarmManagementViewProps> = ({ onNavi
     createAlarmRule,
     toggleAlarmRule,
     deleteAlarmRule,
-    currentUser
+    currentUser,
+    t
   } = useScada();
 
   const [activeTab, setActiveTab] = useState<'active' | 'history' | 'rules' | 'stats'>('active');
@@ -117,10 +118,10 @@ export const AlarmManagementView: React.FC<AlarmManagementViewProps> = ({ onNavi
             <span>SMART INDUSTRIAL ALARM ENGINE & TRIAGE</span>
           </div>
           <h1 className="text-xl font-black text-slate-100 mt-1">
-            Quản Lý Sự Cố & Cảnh Báo Nhà Máy ({activeAlarms.length} Active Alarms)
+            {t('alarmTitle')} ({activeAlarms.length} Active)
           </h1>
           <p className="text-xs text-slate-400 mt-0.5">
-            Quy trình Acknowledge chuẩn ISA-18.2, phân tích nguyên nhân gốc rễ và cảnh báo âm thanh
+            {t('alarmDesc')}
           </p>
         </div>
 
@@ -130,7 +131,7 @@ export const AlarmManagementView: React.FC<AlarmManagementViewProps> = ({ onNavi
             className="flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-lg shadow-rose-600/30 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            <span>Tạo Quy Tắc Alarm Mới</span>
+            <span>+ Rule</span>
           </button>
         </div>
       </div>
@@ -145,7 +146,7 @@ export const AlarmManagementView: React.FC<AlarmManagementViewProps> = ({ onNavi
               : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
           }`}
         >
-          Cảnh Báo Đang Hoạt Động ({activeAlarms.length})
+          {t('activeAlarmsTab')} ({activeAlarms.length})
         </button>
 
         <button
@@ -156,7 +157,7 @@ export const AlarmManagementView: React.FC<AlarmManagementViewProps> = ({ onNavi
               : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
           }`}
         >
-          Lịch Sử Đã Xử Lý ({historyAlarms.length})
+          {t('alarmHistoryTab')} ({historyAlarms.length})
         </button>
 
         <button
@@ -167,18 +168,7 @@ export const AlarmManagementView: React.FC<AlarmManagementViewProps> = ({ onNavi
               : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
           }`}
         >
-          Cấu Hình Ngưỡng & Rules ({alarmRules.length})
-        </button>
-
-        <button
-          onClick={() => setActiveTab('stats')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-            activeTab === 'stats'
-              ? 'bg-slate-800 text-slate-100 border border-slate-700'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-          }`}
-        >
-          Thống Kê Tần Suất & Pareto
+          Rules ({alarmRules.length})
         </button>
       </div>
 

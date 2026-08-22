@@ -73,7 +73,8 @@ export const NotificationCenterView: React.FC = () => {
     retryNotification,
     notificationQueue,
     tags,
-    alarmRules
+    alarmRules,
+    t
   } = useScada();
 
   const [activeTab, setActiveTab] = useState<'rules' | 'email-config' | 'contacts' | 'templates' | 'history'>('rules');
@@ -247,10 +248,10 @@ export const NotificationCenterView: React.FC = () => {
             <span>CENTRALIZED SCADA NOTIFICATION ENGINE</span>
           </div>
           <h1 className="text-xl font-black text-slate-100 mt-1">
-            Trung Tâm Quản Lý Thông Báo & Cảnh Báo Tự Động (Notification Center)
+            {t('notificationCenter')}
           </h1>
           <p className="text-xs text-slate-400 mt-0.5">
-            Cấu hình SMTP Mail Server, luật gửi Email/Telegram/Webhook theo Alarm, ngưỡng Tag, và nhật ký gửi thời gian thực
+            {t('emailConfigTitle')} • SMTP • Recipient Contacts
           </p>
         </div>
 

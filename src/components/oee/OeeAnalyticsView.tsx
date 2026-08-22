@@ -27,7 +27,8 @@ export const OeeAnalyticsView: React.FC<OeeAnalyticsViewProps> = ({
     overallOee,
     plantOkRate,
     totalShiftProduction,
-    calculateMachineOee
+    calculateMachineOee,
+    t
   } = useScada();
 
   const [selectedShift, setSelectedShift] = useState<'shift1' | 'shift2' | 'shift3'>('shift1');
@@ -55,10 +56,10 @@ export const OeeAnalyticsView: React.FC<OeeAnalyticsViewProps> = ({
             <span>OVERALL EQUIPMENT EFFECTIVENESS & MES ANALYTICS</span>
           </div>
           <h1 className="text-xl font-black text-slate-100 mt-1">
-            Phân Tích Hiệu Suất Thiết Bị Tổng Thể OEE / TEEP
+            {t('oeeTitle')}
           </h1>
           <p className="text-xs text-slate-400 mt-0.5">
-            Tiêu chuẩn World-Class Manufacturing (WCM) 85% OEE • Tách bạch Khả dụng, Hiệu suất và Chất lượng
+            {t('oeeDesc')}
           </p>
         </div>
 

@@ -144,6 +144,9 @@ export interface Tag {
   id: string;
   name: string;
   description: string;
+  factoryId?: string;
+  areaId?: string;
+  lineName?: string;
   machineId?: string;
   plcId: string;
   address: string; // e.g., "DM100", "D200", "DB1.DBD10", "%MW100", "ns=2;s=Motor.Temp"
@@ -269,8 +272,27 @@ export interface AiChatMessage {
   };
 }
 
+export type LanguageCode = 'vi' | 'en' | 'ja' | 'zh';
+
+export interface DeepLearningDoc {
+  id: string;
+  title: string;
+  fileName: string;
+  fileSizeKb: number;
+  fileType: 'PDF' | 'DOCX' | 'TXT' | 'SOP' | 'PLC_MAP';
+  category: 'Equipment Manual' | 'Troubleshooting Guide' | 'Error Code Index' | 'PLC Memory Map' | 'Maintenance SOP';
+  targetMachineCode?: string;
+  targetMachineId?: string;
+  contentSnippet: string;
+  uploadedAt: string;
+  uploadedBy: string;
+  indexedInRAG: boolean;
+  vectorChunkCount: number;
+  tags: string[];
+}
+
 export interface SystemSettings {
-  language: 'vi' | 'en';
+  language: LanguageCode;
   theme: 'dark' | 'light';
   soundEnabled: boolean;
   simulationMode: boolean;
@@ -281,6 +303,7 @@ export interface SystemSettings {
   geminiTemperature: number;
   geminiMaxTokens: number;
   enableThinking: boolean;
+  enableRagKnowledgeBase?: boolean;
 }
 
 // ==========================================

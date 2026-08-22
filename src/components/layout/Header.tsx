@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useScada } from '../../context/ScadaContext';
+import { LanguageCode } from '../../types/scada';
 import {
   Activity,
   AlertTriangle,
@@ -12,7 +13,8 @@ import {
   Play,
   Pause,
   Zap,
-  Bot
+  Bot,
+  Globe
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -29,11 +31,22 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToAi, onNavigateToAlar
     overallOee,
     settings,
     updateSettings,
-    totalShiftProduction
+    totalShiftProduction,
+    language,
+    setLanguage,
+    t
   } = useScada();
 
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [showLangDropdown, setShowLangDropdown] = useState(false);
   const [timeStr, setTimeStr] = useState(new Date().toLocaleTimeString('vi-VN'));
+
+  const langOptions: Array<{ code: LanguageCode; label: string; flag: string }> = [
+    { code: 'vi', label: 'Tiếng Việt (VI)', flag: '🇻🇳' },
+    { code: 'en', label: 'English (EN)', flag: '🇺🇸' },
+    { code: 'ja', label: '日本語 (JA)', flag: '🇯🇵' },
+    { code: 'zh', label: '中文 (ZH)', flag: '🇨🇳' }
+  ];
 
   React.useEffect(() => {
     const timer = setInterval(() => {
@@ -81,7 +94,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToAi, onNavigateToAlar
       <div className="hidden md:flex items-center space-x-5 text-xs font-mono">
         <div className="flex items-center space-x-2 px-3 py-1 rounded bg-slate-800/40 border border-slate-800">
           <Activity className="w-3.5 h-3.5 text-cyan-400" />
-          <span className="text-slate-400">PLANT OEE:</span>
+          <span className="text-slate-400">OEE:</span>
           <span className={`font-bold ${overallOee >= 85 ? 'text-emerald-400' : overallOee >= 70 ? 'text-amber-400' : 'text-rose-400'}`}>
             {overallOee}%
           </span>
@@ -89,8 +102,8 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToAi, onNavigateToAlar
 
         <div className="flex items-center space-x-2 px-3 py-1 rounded bg-slate-800/40 border border-slate-800">
           <Radio className="w-3.5 h-3.5 text-indigo-400" />
-          <span className="text-slate-400">OUTPUT:</span>
-          <span className="font-bold text-slate-200">{totalShiftProduction.toLocaleString()} pcs</span>
+          <span className="text-slate-400">{t('totalOutput')}:</span>
+          <span className="font-bold text-slate-200">{totalShiftProduction.toLocaleString()} Pcs</span>
         </div>
 
         <div className="flex items-center space-x-2 px-2.5 py-1 rounded bg-slate-800/30 text-slate-400">
@@ -109,10 +122,10 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToAi, onNavigateToAlar
               ? 'bg-rose-950/60 border-rose-600/70 text-rose-300 shadow-md shadow-rose-900/30 hover:bg-rose-900/80 animate-pulse'
               : 'bg-slate-800/60 border-slate-700 text-slate-400 hover:text-slate-200'
           }`}
-          title="Xem danh sách cảnh báo thời gian thực"
+          title={t('alarmHistory')}
         >
           <AlertTriangle className={`w-4 h-4 ${activeAlarmsCount > 0 ? 'text-rose-400' : 'text-slate-400'}`} />
-          <span>{activeAlarmsCount} ALARMS</span>
+          <span>{activeAlarmsCount} {t('alarm')}</span>
         </button>
 
         {/* AI Copilot Quick Button */}
@@ -146,6 +159,48 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToAi, onNavigateToAlar
         >
           {settings.soundEnabled ? <Volume2 className="w-4 h-4 text-cyan-400" /> : <VolumeX className="w-4 h-4 text-slate-500" />}
         </button>
+
+        {/* 4-Language Switcher (VI, EN, JA, ZH) */}
+        <div className="relative">
+          <button
+            onClick={() => {
+              setShowLangDropdown(!showLangDropdown);
+              setShowUserDropdown(false);
+            }}
+            className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-mono font-bold transition-all cursor-pointer"
+            title="Chuyển đổi ngôn ngữ (Vietnamese, English, Japanese, Chinese)"
+          >
+            <Globe className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="uppercase text-[11px]">{language || 'vi'}</span>
+            <ChevronDown className="w-3 h-3 text-slate-400" />
+          </button>
+
+          {showLangDropdown && (
+            <div className="absolute right-0 mt-2 w-48 rounded-xl bg-slate-900 border border-slate-700 shadow-2xl py-2 z-50">
+              <div className="px-3 py-1.5 border-b border-slate-800 text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+                Select Language / 语言 / 言語
+              </div>
+              {langOptions.map(l => (
+                <button
+                  key={l.code}
+                  onClick={() => {
+                    setLanguage(l.code);
+                    setShowLangDropdown(false);
+                  }}
+                  className={`w-full text-left px-3 py-2 flex items-center justify-between hover:bg-slate-800 text-xs font-mono transition-colors cursor-pointer ${
+                    language === l.code ? 'bg-cyan-950/60 text-cyan-300 font-bold' : 'text-slate-300'
+                  }`}
+                >
+                  <span className="flex items-center space-x-2">
+                    <span className="text-base">{l.flag}</span>
+                    <span>{l.label}</span>
+                  </span>
+                  {language === l.code && <span className="text-cyan-400 text-xs">✓</span>}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* User Role Switcher Dropdown */}
         <div className="relative">

@@ -18,7 +18,7 @@ interface HistorianTrendsViewProps {
 }
 
 export const HistorianTrendsView: React.FC<HistorianTrendsViewProps> = ({ initialSelectedTagId }) => {
-  const { tags, tagHistoryBuffer, machines } = useScada();
+  const { tags, tagHistoryBuffer, machines, plcs, t } = useScada();
 
   const historianLogs = useMemo(() => {
     const list: Array<{ id: string; tagId: string; timestamp: string; value: number | string | boolean; quality: string }> = [];
@@ -40,6 +40,17 @@ export const HistorianTrendsView: React.FC<HistorianTrendsViewProps> = ({ initia
     () => tags.filter(t => t.dataType === 'Int' || t.dataType === 'DInt' || t.dataType === 'Float' || t.dataType === 'Double'),
     [tags]
   );
+
+  const [selectedMachineId, setSelectedMachineId] = useState<string>('ALL');
+  const [selectedPlcId, setSelectedPlcId] = useState<string>('ALL');
+
+  const contextualNumericTags = useMemo(() => {
+    return numericTags.filter(t => {
+      if (selectedMachineId !== 'ALL' && t.machineId !== selectedMachineId) return false;
+      if (selectedPlcId !== 'ALL' && t.plcId !== selectedPlcId) return false;
+      return true;
+    });
+  }, [numericTags, selectedMachineId, selectedPlcId]);
 
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>(
     initialSelectedTagId ? [initialSelectedTagId] : numericTags.slice(0, 3).map(t => t.id)
@@ -124,10 +135,10 @@ export const HistorianTrendsView: React.FC<HistorianTrendsViewProps> = ({ initia
             <span>TIME-SERIES HISTORIAN ENGINE & MULTI-PEN TREND</span>
           </div>
           <h1 className="text-xl font-black text-slate-100 mt-1">
-            Biểu Đồ Xu Hướng & Cơ Sở Dữ Liệu Lịch Sử (Historian Trends)
+            {t('historianTitle')}
           </h1>
           <p className="text-xs text-slate-400 mt-0.5">
-            Lưu trữ chuỗi thời gian tốc độ cao, phân tích thống kê Min/Max/Avg và truy vết sai lệch
+            {t('historianDesc')}
           </p>
         </div>
 
@@ -137,7 +148,7 @@ export const HistorianTrendsView: React.FC<HistorianTrendsViewProps> = ({ initia
             className="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-medium cursor-pointer transition-colors"
           >
             <Download className="w-4 h-4" />
-            <span>Xuất Dữ Liệu CSV</span>
+            <span>{t('exportCsv')}</span>
           </button>
         </div>
       </div>
@@ -150,13 +161,50 @@ export const HistorianTrendsView: React.FC<HistorianTrendsViewProps> = ({ initia
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-1.5">
                 <Layers className="w-4 h-4 text-cyan-400" />
-                <span>Chọn Bút Vẽ (Pens)</span>
+                <span>Lọc Theo Context Thiết Bị</span>
+              </span>
+            </div>
+
+            {/* Context Selectors */}
+            <div className="space-y-2 text-xs font-mono">
+              <div>
+                <label className="block text-[10px] text-slate-400 uppercase mb-1">Chọn Máy (Machine):</label>
+                <select
+                  value={selectedMachineId}
+                  onChange={e => setSelectedMachineId(e.target.value)}
+                  className="w-full p-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 outline-none focus:border-cyan-500"
+                >
+                  <option value="ALL">Tất cả các máy ({machines.length})</option>
+                  {machines.map(m => (
+                    <option key={m.id} value={m.id}>{m.code} - {m.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[10px] text-slate-400 uppercase mb-1">Chọn PLC Bộ Điều Khiển:</label>
+                <select
+                  value={selectedPlcId}
+                  onChange={e => setSelectedPlcId(e.target.value)}
+                  className="w-full p-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 outline-none focus:border-cyan-500"
+                >
+                  <option value="ALL">Tất cả PLC ({plcs.length})</option>
+                  {plcs.map(p => (
+                    <option key={p.id} value={p.id}>{p.name} ({p.ipAddress})</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-2 border-t border-slate-800">
+              <span className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-1.5">
+                <span>Chọn Bút Vẽ ({contextualNumericTags.length} Tags)</span>
               </span>
               <span className="text-[10px] font-mono text-slate-500">Max 5 Pens</span>
             </div>
 
-            <div className="space-y-1.5 max-h-[420px] overflow-y-auto pr-1">
-              {numericTags.map(tag => {
+            <div className="space-y-1.5 max-h-[380px] overflow-y-auto pr-1">
+              {contextualNumericTags.map(tag => {
                 const isChecked = selectedTagIds.includes(tag.id);
                 const penIndex = selectedTagIds.indexOf(tag.id);
                 const penColor = isChecked ? PEN_COLORS[penIndex % PEN_COLORS.length] : undefined;

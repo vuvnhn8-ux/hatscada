@@ -12,7 +12,8 @@ import {
   Bot,
   Settings,
   Sparkles,
-  Bell
+  Bell,
+  BookOpen
 } from 'lucide-react';
 import { useScada } from '../../context/ScadaContext';
 
@@ -28,6 +29,7 @@ export type ViewType =
   | 'oee'
   | 'reports'
   | 'ai-copilot'
+  | 'deep-learning'
   | 'settings';
 
 interface SidebarProps {
@@ -36,7 +38,7 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentView, onSelectView }) => {
-  const { activeAlarmsCount, plcs, emailConfig } = useScada();
+  const { activeAlarmsCount, plcs, emailConfig, deepLearningDocs, t } = useScada();
 
   const navItems: Array<{
     id: ViewType;
@@ -46,33 +48,34 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onSelectView }) =
     badgeColor?: string;
     section?: string;
   }> = [
-    { section: 'MONITORING', id: 'dashboard', label: 'Main Dashboard', icon: LayoutDashboard },
-    { id: 'machines', label: 'Digital Twin & Machines', icon: Cpu, badge: '5 Cells' },
-    { id: 'tags-live', label: 'Live Tag Monitor', icon: Radio },
+    { section: t('monitoring'), id: 'dashboard', label: t('mainDashboard'), icon: LayoutDashboard },
+    { id: 'machines', label: t('machinesTwin'), icon: Cpu, badge: '5 Cells' },
+    { id: 'tags-live', label: t('liveTagMonitor'), icon: Radio },
 
-    { section: 'CONTROL & ENGINEERING', id: 'tags-studio', label: 'Tag Management', icon: Tags },
-    { id: 'plc-drivers', label: 'PLC Communication', icon: Server, badge: `${plcs.length} PLCs` },
+    { section: t('controlEngineering'), id: 'tags-studio', label: t('tagManagement'), icon: Tags },
+    { id: 'plc-drivers', label: t('plcCommunication'), icon: Server, badge: `${plcs.length} PLCs` },
     {
       id: 'alarms',
-      label: 'Alarm Management',
+      label: t('alarmManagement'),
       icon: AlertTriangle,
       badge: activeAlarmsCount > 0 ? activeAlarmsCount : undefined,
       badgeColor: 'bg-rose-500 text-white font-bold'
     },
     {
       id: 'notifications',
-      label: 'Notification Center',
+      label: t('notificationCenter'),
       icon: Bell,
       badge: emailConfig.connectionStatus === 'Connected' ? 'SMTP' : undefined,
       badgeColor: 'bg-emerald-600/80 text-white font-mono'
     },
 
-    { section: 'ANALYTICS & MES', id: 'historian', label: 'Historian Database', icon: LineChart },
-    { id: 'oee', label: 'OEE / OEE-A Analytics', icon: Gauge },
-    { id: 'reports', label: 'Report Management', icon: FileSpreadsheet },
+    { section: t('analyticsMes'), id: 'historian', label: t('historianDatabase'), icon: LineChart },
+    { id: 'oee', label: t('oeeAnalytics'), icon: Gauge },
+    { id: 'reports', label: t('reportManagement'), icon: FileSpreadsheet },
 
-    { section: 'INTELLIGENCE', id: 'ai-copilot', label: 'HAT AI Copilot', icon: Bot, badge: 'Gemini', badgeColor: 'bg-indigo-600 text-white' },
-    { id: 'settings', label: 'Global Configuration', icon: Settings }
+    { section: t('intelligence'), id: 'ai-copilot', label: t('aiCopilot'), icon: Bot, badge: 'Gemini', badgeColor: 'bg-indigo-600 text-white' },
+    { id: 'deep-learning', label: t('deepLearningFolder'), icon: BookOpen, badge: `${deepLearningDocs.length} Docs`, badgeColor: 'bg-purple-600 text-white font-mono' },
+    { id: 'settings', label: t('globalSettings'), icon: Settings }
   ];
 
   return (
@@ -135,7 +138,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onSelectView }) =
             <span>Industrial AI Copilot</span>
           </div>
           <p className="text-[11px] text-slate-400 line-clamp-2">
-            Phân tích nguyên nhân dừng máy, chẩn đoán Alarm & dự đoán bảo trì tức thì.
+            {t('Phân tích nguyên nhân dừng máy, chẩn đoán Alarm & dự đoán bảo trì tức thì.')}
           </p>
         </button>
       </div>

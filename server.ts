@@ -43,16 +43,17 @@ async function startServer() {
   // AI Chat & Diagnostics
   app.post('/api/ai/chat', async (req, res) => {
     try {
-      const { prompt, systemContext, modelName, temperature } = req.body;
+      const { prompt, systemContext, context, modelName, model, temperature, apiKey } = req.body;
       if (!prompt) {
         return res.status(400).json({ error: 'Prompt is required' });
       }
 
       const result = await askHatAiCopilot({
         prompt,
-        systemContext: systemContext || '',
-        modelName: modelName || 'gemini-3.7-flash',
-        temperature: typeof temperature === 'number' ? temperature : 0.7
+        systemContext: context || systemContext || '',
+        modelName: model || modelName || 'gemini-3.7-flash',
+        temperature: typeof temperature === 'number' ? temperature : 0.7,
+        apiKey: apiKey || undefined
       });
 
       res.json({

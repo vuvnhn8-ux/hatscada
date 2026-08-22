@@ -25,7 +25,7 @@ import { PlcMemoryInspector } from './PlcMemoryInspector';
 type PlcSubTab = 'overview' | 'hierarchy' | 'terminal' | 'memory';
 
 export const PlcCommunicationView: React.FC = () => {
-  const { plcs } = useScada();
+  const { plcs, t } = useScada();
   const [activeTab, setActiveTab] = useState<PlcSubTab>('overview');
 
   // Modal states
@@ -61,13 +61,13 @@ export const PlcCommunicationView: React.FC = () => {
         <div>
           <div className="flex items-center space-x-2 text-xs font-mono text-cyan-400">
             <Server className="w-4 h-4" />
-            <span>MODULE 29: MULTI PLC MANAGEMENT SYSTEM & DRIVER ENGINE</span>
+            <span>INDUSTRIAL PLC COMMUNICATION & DRIVER RACK</span>
           </div>
           <h1 className="text-2xl font-black text-slate-100 mt-1">
-            Quản Lý & Giám Sát Đa PLC Công Nghiệp ({plcs.length} PLCs Managed)
+            {t('plcTitle')} ({plcs.length} PLCs)
           </h1>
           <p className="text-xs text-slate-400 mt-1">
-            Hỗ trợ 1 đến 100+ PLCs đồng thời (Keyence KV, Mitsubishi FX/Q/iQ-R, Siemens S7, Modbus TCP, OPC UA) với luồng thu thập dữ liệu bất đồng bộ độc lập.
+            {t('plcDesc')}
           </p>
         </div>
 
@@ -78,7 +78,7 @@ export const PlcCommunicationView: React.FC = () => {
             className="flex items-center space-x-1.5 px-4 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold shadow-lg shadow-cyan-600/30 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            <span>Thêm PLC Mới</span>
+            <span>+ PLC</span>
           </button>
         </div>
       </div>
