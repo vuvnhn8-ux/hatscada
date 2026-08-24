@@ -84,9 +84,9 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToAi, onNavigateToAlar
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
-          <span className="text-slate-300 font-mono">PLC RACK: ONLINE</span>
+          <span className="text-slate-300 font-mono">{t('plcRackOnline')}</span>
           <span className="text-slate-500 text-[10px]">|</span>
-          <span className="text-cyan-400 font-mono font-medium">5 DRIVERS SYNC</span>
+          <span className="text-cyan-400 font-mono font-medium">{t('driversSync')}</span>
         </div>
       </div>
 
@@ -122,7 +122,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToAi, onNavigateToAlar
               ? 'bg-rose-950/60 border-rose-600/70 text-rose-300 shadow-md shadow-rose-900/30 hover:bg-rose-900/80 animate-pulse'
               : 'bg-slate-800/60 border-slate-700 text-slate-400 hover:text-slate-200'
           }`}
-          title={t('alarmHistory')}
+          title={t('alarmManagement')}
         >
           <AlertTriangle className={`w-4 h-4 ${activeAlarmsCount > 0 ? 'text-rose-400' : 'text-slate-400'}`} />
           <span>{activeAlarmsCount} {t('alarm')}</span>
@@ -132,10 +132,10 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToAi, onNavigateToAlar
         <button
           onClick={onNavigateToAi}
           className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-indigo-950/70 hover:bg-indigo-900 border border-indigo-700/60 text-indigo-200 text-xs font-semibold shadow-md shadow-indigo-950/40 transition-all group"
-          title="Mở trợ lý AI HAT Copilot"
+          title={t('aiCopilot')}
         >
           <Bot className="w-4 h-4 text-indigo-400 group-hover:rotate-12 transition-transform" />
-          <span className="hidden sm:inline">AI COPILOT</span>
+          <span className="hidden sm:inline">{t('aiCopilot')}</span>
         </button>
 
         {/* Simulation Mode Toggle */}
@@ -146,7 +146,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToAi, onNavigateToAlar
               ? 'bg-emerald-950/50 border-emerald-700/50 text-emerald-300'
               : 'bg-slate-800 border-slate-700 text-slate-400'
           }`}
-          title={settings.simulationMode ? 'Tạm dừng mô phỏng PLC' : 'Bật luồng mô phỏng dữ liệu PLC'}
+          title={settings.simulationMode ? t('Tắt mô phỏng') : t('Bật mô phỏng')}
         >
           {settings.simulationMode ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
         </button>
@@ -155,7 +155,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToAi, onNavigateToAlar
         <button
           onClick={() => updateSettings({ soundEnabled: !settings.soundEnabled })}
           className="p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800 border border-slate-700 text-slate-300 transition-colors"
-          title={settings.soundEnabled ? 'Tắt âm thanh cảnh báo' : 'Bật âm thanh cảnh báo'}
+          title={settings.soundEnabled ? t('Tắt âm thanh') : t('Bật âm thanh')}
         >
           {settings.soundEnabled ? <Volume2 className="w-4 h-4 text-cyan-400" /> : <VolumeX className="w-4 h-4 text-slate-500" />}
         </button>
@@ -168,7 +168,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToAi, onNavigateToAlar
               setShowUserDropdown(false);
             }}
             className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-mono font-bold transition-all cursor-pointer"
-            title="Chuyển đổi ngôn ngữ (Vietnamese, English, Japanese, Chinese)"
+            title={t('languageSelect')}
           >
             <Globe className="w-3.5 h-3.5 text-cyan-400" />
             <span className="uppercase text-[11px]">{language || 'vi'}</span>
@@ -178,7 +178,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToAi, onNavigateToAlar
           {showLangDropdown && (
             <div className="absolute right-0 mt-2 w-48 rounded-xl bg-slate-900 border border-slate-700 shadow-2xl py-2 z-50">
               <div className="px-3 py-1.5 border-b border-slate-800 text-[10px] font-mono text-slate-400 uppercase tracking-wider">
-                Select Language / 语言 / 言語
+                {t('languageSelect')}
               </div>
               {langOptions.map(l => (
                 <button
@@ -227,7 +227,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToAi, onNavigateToAlar
           {showUserDropdown && (
             <div className="absolute right-0 mt-2 w-64 rounded-xl bg-slate-900 border border-slate-700 shadow-2xl py-2 z-50">
               <div className="px-3 py-2 border-b border-slate-800 text-xs">
-                <div className="text-slate-400 font-medium">Chuyển đổi vai trò người dùng (RBAC):</div>
+                <div className="text-slate-400 font-medium">{t('Quản Lý Người Dùng & Phân Quyền')}:</div>
               </div>
               {users.map(u => (
                 <button

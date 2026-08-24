@@ -127,7 +127,7 @@ export const MainDashboard: React.FC<MainDashboardProps> = ({
               {overallOee}%
             </span>
             <span className="text-xs text-emerald-400 flex items-center font-medium">
-              +1.8% vs Target
+              +1.8% {t('vsTarget')}
               <ArrowUpRight className="w-3.5 h-3.5 ml-0.5" />
             </span>
           </div>
@@ -138,8 +138,8 @@ export const MainDashboard: React.FC<MainDashboardProps> = ({
             />
           </div>
           <div className="mt-2 flex justify-between text-[11px] text-slate-500 font-mono">
-            <span>World-Class: 85%</span>
-            <span>Target: 82%</span>
+            <span>{t('worldClass')}: 85%</span>
+            <span>{t('target')}: 82%</span>
           </div>
         </div>
 
@@ -163,7 +163,7 @@ export const MainDashboard: React.FC<MainDashboardProps> = ({
           </div>
           <div className="mt-1 flex items-center justify-between text-[11px] text-slate-400">
             <span>{t('runningLines')}:</span>
-            <span className="font-bold text-cyan-400 font-mono">{runningCount} / {machines.length} Cells</span>
+            <span className="font-bold text-cyan-400 font-mono">{runningCount} / {machines.length} {t('dây chuyền')}</span>
           </div>
         </div>
 
@@ -189,7 +189,7 @@ export const MainDashboard: React.FC<MainDashboardProps> = ({
             <span className="text-xs text-slate-400">{t('status')}</span>
           </div>
           <div className="mt-2 text-[11px] text-slate-400 flex items-center justify-between">
-            <span>Critical Severity:</span>
+            <span>{t('criticalSeverity')}:</span>
             <span className="font-bold text-rose-400 font-mono">
               {alarmEvents.filter(a => a.status === 'Active' && a.priority === 'Critical').length}
             </span>
@@ -215,11 +215,11 @@ export const MainDashboard: React.FC<MainDashboardProps> = ({
             <span className="text-xs text-slate-400">kW</span>
           </div>
           <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400">
-            <span>Power Factor (cosφ):</span>
-            <span className="font-mono text-emerald-400">0.96 (Optimal)</span>
+            <span>{t('powerFactor')}:</span>
+            <span className="font-mono text-emerald-400">0.96 ({t('optimal')})</span>
           </div>
           <div className="mt-1 flex items-center justify-between text-[11px] text-slate-400">
-            <span>Grid Frequency:</span>
+            <span>{t('gridFrequency')}:</span>
             <span className="font-mono text-cyan-400">50.0 Hz</span>
           </div>
         </div>
@@ -313,7 +313,7 @@ export const MainDashboard: React.FC<MainDashboardProps> = ({
                 <div className="flex items-center justify-between pt-3 border-t border-slate-800/80 text-xs">
                   <div className="text-[11px] text-slate-500 flex items-center space-x-1 font-mono">
                     <Clock className="w-3 h-3 text-slate-500" />
-                    <span>Run: {Math.round(m.runTimeSeconds / 60)}m</span>
+                    <span>{t('runTime')}: {Math.round(m.runTimeSeconds / 60)}m</span>
                   </div>
 
                   <button

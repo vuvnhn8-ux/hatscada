@@ -126,7 +126,27 @@ const phraseMap: Record<string, Record<LanguageCode, string>> = {
   'Cảnh báo': { vi: 'Cảnh báo', en: 'Alarm', ja: 'アラーム', zh: '报警' },
   'Bảo trì': { vi: 'Bảo trì', en: 'Maintenance', ja: 'メンテナンス', zh: '维护' },
   'Tổng cộng:': { vi: 'Tổng cộng:', en: 'Total:', ja: '合計:', zh: '总计:' },
-  'Máy': { vi: 'Máy', en: 'Machines', ja: '台', zh: '台设备' }
+  'Máy': { vi: 'Máy', en: 'Machines', ja: '台', zh: '台设备' },
+  'totalOutput': { vi: 'Sản Lượng Ca', en: 'Shift Output', ja: 'シフト生産量', zh: '当前班次产量' },
+  'vsTarget': { vi: 'so với Mục Tiêu', en: 'vs Target', ja: '目標比', zh: '对比目标' },
+  'worldClass': { vi: 'Chuẩn Quốc Tế', en: 'World-Class', ja: '世界水準', zh: '世界级水准' },
+  'target': { vi: 'Mục Tiêu', en: 'Target', ja: '目標', zh: '目标' },
+  'dây chuyền': { vi: 'Dây chuyền', en: 'Lines', ja: 'ライン', zh: '产线' },
+  'runTime': { vi: 'Thời gian chạy', en: 'Run Time', ja: '稼働時間', zh: '运行时间' },
+  'criticalSeverity': { vi: 'Mức Độ Nguy Cấp', en: 'Critical Severity', ja: '緊急障害度', zh: '极高危级别' },
+  'powerFactor': { vi: 'Hệ Số Công Suất (cosφ)', en: 'Power Factor (cosφ)', ja: '力率 (cosφ)', zh: '功率因数 (cosφ)' },
+  'optimal': { vi: 'Tối Ưu', en: 'Optimal', ja: '最適', zh: '最佳' },
+  'gridFrequency': { vi: 'Tần Số Lưới Điện', en: 'Grid Frequency', ja: '電力網周波数', zh: '电网频率' },
+  'Tắt mô phỏng': { vi: 'Tắt mô phỏng PLC', en: 'Disable PLC Sim', ja: 'PLCシミュレーション停止', zh: '停用 PLC 模拟' },
+  'Bật mô phỏng': { vi: 'Bật mô phỏng PLC', en: 'Enable PLC Sim', ja: 'PLCシミュレーション開始', zh: '启用 PLC 模拟' },
+  'Tắt âm thanh': { vi: 'Tắt âm thanh cảnh báo', en: 'Mute Sound Alerts', ja: '音声アラート停止', zh: '静音声音报警' },
+  'Bật âm thanh': { vi: 'Bật âm thanh cảnh báo', en: 'Unmute Sound Alerts', ja: '音声アラート有効化', zh: '开启声音报警' },
+  'Phân tích nguyên nhân dừng máy, chẩn đoán Alarm & dự đoán bảo trì tức thì.': {
+    vi: 'Phân tích nguyên nhân dừng máy, chẩn đoán Alarm & dự đoán bảo trì tức thì.',
+    en: 'Root-cause downtime analysis, alarm triage & predictive maintenance in real time.',
+    ja: '停止要因分析、アラーム診断および予知保全をリアルタイムで実行。',
+    zh: '实时停机根因分析、报警诊断与预测性维护。'
+  }
 };
 
 export interface Translations {
